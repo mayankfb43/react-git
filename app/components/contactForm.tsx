@@ -11,7 +11,7 @@ export default function App() {
 
   return (
     /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
-    <>
+    <div style={{ backgroundColor: "blue" }}>
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* register your input into the hook by invoking the "register" function */}
         <input defaultValue="test" {...register("example")} />
@@ -23,6 +23,6 @@ export default function App() {
 
         <input type="submit" />
       </form>
-    </>
+    </div>
   );
 }

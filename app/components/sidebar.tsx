@@ -1,6 +1,6 @@
 import { Form, Link, NavLink, Outlet, useNavigation } from "react-router";
 import { getContacts } from "../data";
-import type { Route } from "./+types/sidebar";
+import type { Route } from "../components/+types/sidebar";
 
 export async function loader() {
   const contacts = await getContacts();
@@ -12,7 +12,7 @@ export default function SidebarLayout({ loaderData }: Route.ComponentProps) {
 
   const { contacts } = loaderData;
   return (
-    <>
+    <div style={{ display: "flex", backgroundColor: "green" }}>
       <div id="sidebar">
         <h1>
           <Link to="about">React Router Contacts</Link>
@@ -63,6 +63,6 @@ export default function SidebarLayout({ loaderData }: Route.ComponentProps) {
       >
         <Outlet />
       </div>
-    </>
+    </div>
   );
 }
