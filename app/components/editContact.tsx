@@ -1,7 +1,14 @@
-import { Form, Outlet } from "react-router";
+import { Form, Outlet, redirect } from "react-router";
 import type { Route } from "../components/+types/editContact";
 
-import { getContact } from "../data";
+import { getContact, updateContact } from "../data";
+
+export async function action({ params, request }: Route.ActionArgs) {
+  const formData = await request.formData();
+  const updates = Object.fromEntries(formData);
+  await updateContact(params.contactId, updates);
+  return redirect(`/contacts/${params.contactId}/edit/r2`);
+}
 
 export async function loader({ params }: Route.LoaderArgs) {
   const contact = await getContact(params.contactId);
@@ -32,6 +39,7 @@ export default function EditContact({ loaderData }: Route.ComponentProps) {
             name="last"
             placeholder="Last"
             type="text"
+            className="form-control"
           />
         </p>
         <label>
@@ -41,6 +49,7 @@ export default function EditContact({ loaderData }: Route.ComponentProps) {
             name="twitter"
             placeholder="@jack"
             type="text"
+            className="form-control"
           />
         </label>
         <label>
@@ -51,15 +60,25 @@ export default function EditContact({ loaderData }: Route.ComponentProps) {
             name="avatar"
             placeholder="https://example.com/avatar.jpg"
             type="text"
+            className="form-control"
           />
         </label>
         <label>
           <span>Notes</span>
-          <textarea defaultValue={contact.notes} name="notes" rows={6} />
+          <textarea
+            defaultValue={contact.notes}
+            name="notes"
+            rows={6}
+            className="form-control"
+          />
         </label>
         <p>
-          <button type="submit">Save</button>
-          <button type="button">Cancel</button>
+          <button type="submit" className="form-control">
+            Save
+          </button>
+          <button type="button" className="form-control">
+            Cancel
+          </button>
         </p>
       </Form>
       <Outlet />

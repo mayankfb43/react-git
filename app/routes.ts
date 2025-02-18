@@ -3,11 +3,13 @@ import { route, layout } from "@react-router/dev/routes";
 
 export default [
   layout("layouts/home.tsx", [
-    layout("components/sidebar.tsx", [
+    route("/", "components/sidebar.tsx", [
       index("routes/welcome.tsx"),
-      route("contact", "components/contactForm.tsx"),
+      route("contacts", "components/contactForm.tsx"),
+      route("contacts/:contactId", "components/contactViewForm.tsx"),
+      route("contacts/:contactId/destroy", "components/destroyContact.tsx"),
       route("contacts/:contactId/edit", "components/editContact.tsx", [
-        route("r1", "components/editContactP1.tsx"),
+        index("components/editContactP1.tsx"),
         route("r2", "components/editContactP2.tsx"),
       ]),
     ]),
