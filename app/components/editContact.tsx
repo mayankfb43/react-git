@@ -4,37 +4,36 @@ import { store } from "~/store";
 import { updateContact } from "../data";
 import { fetchContact, saveContact } from "~/features/contactSlice";
 
-export async function clientAction({ params, request }: Route.ActionArgs) {
+export async function clientAction({
+  request,
+  params,
+}: Route.ClientActionArgs | Route.ActionArgs) {
+  let formData = await request.formData();
+  let name = formData.get("name");
+  let email = formData.get("email");
+  let phone = formData.get("phone");
+  let catchPhrase = formData.get("notes");
+  let contact = await store
+    .dispatch(fetchContact({ id: params.contactId }))
+    .unwrap();
+
   await store
     .dispatch(
       saveContact({
         id: params.contactId,
         payload: {
-          id: 1,
-          name: "Leanne Graham 222",
-          username: "Bret",
-          email: "Sincere@april.biz",
-          address: {
-            street: "Kulas Light",
-            suite: "Apt. 556",
-            city: "Gwenborough",
-            zipcode: "92998-3874",
-            geo: {
-              lat: "-37.3159",
-              lng: "81.1496",
-            },
-          },
-          phone: "1-770-736-8031 x56442",
-          website: "hildegard.org",
+          ...contact,
+          name,
+          email,
+          phone,
           company: {
-            name: "Romaguera-Crona",
-            catchPhrase: "Multi-layered client-server neural-net",
-            bs: "harness real-time e-markets",
+            ...contact.company,
+            catchPhrase: catchPhrase,
           },
         },
       })
     )
-    .unwrap(); // Dispatch action manually
+    .unwrap();
   return redirect(`/contacts/${params.contactId}`);
 }
 
@@ -55,7 +54,7 @@ export default function EditContact({ loaderData }: Route.ComponentProps) {
           <input
             aria-label="First name"
             defaultValue={contact.name}
-            name="first"
+            name="name"
             placeholder="First"
             type="text"
             className="form-control"
@@ -65,7 +64,7 @@ export default function EditContact({ loaderData }: Route.ComponentProps) {
           <span>Twitter</span>
           <input
             defaultValue={contact.phone}
-            name="twitter"
+            name="email"
             placeholder="@jack"
             type="text"
             className="form-control"
@@ -76,7 +75,7 @@ export default function EditContact({ loaderData }: Route.ComponentProps) {
           <input
             aria-label="Avatar URL"
             defaultValue={contact.email}
-            name="avatar"
+            name="phone"
             placeholder="https://example.com/avatar.jpg"
             type="text"
             className="form-control"
