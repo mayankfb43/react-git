@@ -1,11 +1,14 @@
 import { Form } from "react-router";
 import { getContact } from "../data";
 import type { Route } from "./+types/contactViewForm";
-
+import { store } from "~/store";
 import type { ContactRecord } from "../data";
+import { fetchContact } from "~/features/contactSlice";
 
-export async function loader({ params }: Route.LoaderArgs) {
-  const contact = await getContact(params.contactId);
+export async function clientLoader({ params }: Route.LoaderArgs) {
+  let contact = await store
+    .dispatch(fetchContact({ id: params.contactId }))
+    .unwrap(); // Dispatch action manually
   return { contact };
 }
 
@@ -14,35 +17,14 @@ export default function Contact({ loaderData }: Route.ComponentProps) {
 
   return (
     <div id="contact">
-      <div>
-        <img
-          alt={`${contact.first} ${contact.last} avatar`}
-          key={contact.avatar}
-          src={contact.avatar}
-        />
-      </div>
+      <div></div>
 
       <div>
         <h1>
-          {contact.first || contact.last ? (
-            <>
-              {contact.first} {contact.last}
-            </>
-          ) : (
-            <i>No Name</i>
-          )}
-          <Favorite contact={contact} />
+          <>{contact.name}</>
         </h1>
 
-        {contact.twitter ? (
-          <p>
-            <a href={`https://twitter.com/${contact.twitter}`}>
-              {contact.twitter}
-            </a>
-          </p>
-        ) : null}
-
-        {contact.notes ? <p>{contact.notes}</p> : null}
+        {contact.notes ? <p>{contact.email}</p> : null}
 
         <div>
           <Form action="edit">

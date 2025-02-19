@@ -3,7 +3,7 @@ import type { Route } from "../components/+types/editContact";
 
 import { getContact } from "../data";
 
-export async function loader({ params }: Route.LoaderArgs) {
+export async function clientLoader({ params }: Route.LoaderArgs) {
   const contact = await getContact(params.contactId);
   if (!contact) {
     throw new Response("Not Found", { status: 404 });

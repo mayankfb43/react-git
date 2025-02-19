@@ -1,16 +1,22 @@
 import { Form, Link, NavLink, Outlet, useNavigation } from "react-router";
 import { getContacts } from "../data";
 import type { Route } from "../components/+types/sidebar";
+import { fetchContacts } from "~/features/contactSlice";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch } from "../store"; // Adjust path to your store
+import { useEffect } from "react";
+import { store } from "../store/index";
 
-export async function loader() {
-  const contacts = await getContacts();
+export async function clientLoader() {
+  let contacts = await store.dispatch(fetchContacts()).unwrap(); // Dispatch action manually
   return { contacts };
 }
 
 export default function SidebarLayout({ loaderData }: Route.ComponentProps) {
   const navigation = useNavigation();
-
   const { contacts } = loaderData;
+
+  //const { contacts } = loaderData;
   return (
     <div style={{ display: "flex", backgroundColor: "green" }}>
       <div id="sidebar">
@@ -33,17 +39,17 @@ export default function SidebarLayout({ loaderData }: Route.ComponentProps) {
           </Form>
         </div>
         <nav>
-          {contacts.length ? (
+          {contacts && contacts.length ? (
             <ul>
-              {contacts.map((contact) => (
+              {contacts.map((contact: any) => (
                 <li key={contact.id}>
                   <NavLink
                     to={`contacts/${contact.id}`}
                     style={{ color: "black" }}
                   >
-                    {contact.first || contact.last ? (
+                    {contact.name ? (
                       <>
-                        {contact.first} {contact.last}
+                        <p>{contact.name}</p>
                       </>
                     ) : (
                       <i>No Name</i>
